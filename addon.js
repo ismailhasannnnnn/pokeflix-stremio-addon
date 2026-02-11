@@ -1,8 +1,12 @@
 const { addonBuilder, getRouter } = require('stremio-addon-sdk');
 const express = require('express');
+const https = require('https');
 
 const BASE_URL = 'https://www.pokeflix.tv';
 const CDN_BASE = 'https://v1.pkflx.com/hls';
+
+// Detected from incoming requests (updated dynamically)
+let serverUrl = `http://localhost:${process.env.PORT || 7515}`;
 
 // ==================== CONTENT DATA ====================
 
@@ -91,22 +95,139 @@ const MOVIES = [
 
 /**
  * Build the HLS playlist URL for a series episode.
- * The playlist.m3u8 is a master HLS manifest that provides:
- *   - Adaptive bitrate streaming (360p / 720p / 1080p)
- *   - Separate audio tracks (English)
- *   - Subtitles (English / SDH)
+ * Points to our local proxy which strips non-English tracks for faster startup.
  */
 function buildEpisodeUrl(series, episodeNum) {
     const ep = String(episodeNum).padStart(2, '0');
-    return `${CDN_BASE}/${series.cdn}/${ep}/playlist.m3u8`;
+    return `${serverUrl}/hls/series/${series.id}/${ep}/playlist.m3u8`;
 }
 
 /**
  * Build the HLS playlist URL for a movie.
- * Movies include English + Japanese audio and subtitle tracks.
+ * Points to our local proxy which strips non-English tracks for faster startup.
  */
 function buildMovieUrl(movie) {
-    return `${CDN_BASE}/${movie.cdnPath}/playlist.m3u8`;
+    return `${serverUrl}/hls/movie/${movie.id}/playlist.m3u8`;
+}
+
+// ==================== MANIFEST PROXY ====================
+
+// In-memory cache: key → { data, timestamp }
+const manifestCache = new Map();
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Fetch a master HLS manifest from the CDN, strip all non-English audio/subtitle
+ * tracks, remove I-frame streams, and absolutify all relative URIs so the player
+ * goes directly to the CDN for variant playlists and segments.
+ *
+ * Newer seasons (S17+) have 40-57 tracks (23 audio dubs, 25+ subtitle languages).
+ * The player fetches every track's sub-playlist before starting playback.
+ * By stripping to English-only, we cut ~50 requests down to ~3.
+ */
+async function fetchFilteredManifest(cdnPath) {
+    const cacheKey = cdnPath;
+    const cached = manifestCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.data;
+    }
+
+    const cdnUrl = `${CDN_BASE}/${cdnPath}`;
+    const text = await httpsGet(`${cdnUrl}/playlist.m3u8`);
+    if (!text) return null;
+
+    const filtered = filterManifest(text, cdnUrl);
+    manifestCache.set(cacheKey, { data: filtered, timestamp: Date.now() });
+    return filtered;
+}
+
+/** Simple HTTPS GET that returns the response body as a string. */
+function httpsGet(url) {
+    return new Promise((resolve, reject) => {
+        https.get(url, (res) => {
+            if (res.statusCode !== 200) return resolve(null);
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => resolve(data));
+        }).on('error', reject);
+    });
+}
+
+/**
+ * Parse an HLS master manifest and keep only:
+ *  - English audio (+ Japanese for movies that have it)
+ *  - English subtitles (regular + SDH + forced)
+ *  - All video quality variants
+ * Removes I-frame streams (trick play, not needed).
+ * Converts all relative URIs to absolute CDN URLs.
+ */
+function filterManifest(manifest, cdnUrl) {
+    const lines = manifest.split('\n');
+    const output = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        // Always keep the header tags
+        if (line.startsWith('#EXTM3U') || line.startsWith('#EXT-X-INDEPENDENT-SEGMENTS')) {
+            output.push(line);
+            continue;
+        }
+
+        // Filter AUDIO tracks: keep English + Japanese only
+        if (line.includes('TYPE=AUDIO')) {
+            if (line.includes('LANGUAGE="en"') || line.includes('LANGUAGE="ja"')) {
+                output.push(absolutifyUri(line, cdnUrl));
+            }
+            continue;
+        }
+
+        // Filter SUBTITLE tracks: keep English variants only
+        if (line.includes('TYPE=SUBTITLES')) {
+            if (line.includes('LANGUAGE="en"')) {
+                output.push(absolutifyUri(line, cdnUrl));
+            }
+            continue;
+        }
+
+        // Skip I-frame streams (trick play, not needed for normal playback)
+        if (line.startsWith('#EXT-X-I-FRAME-STREAM-INF:')) {
+            continue;
+        }
+
+        // Keep #EXT-X-STREAM-INF and the variant URI on the next line
+        if (line.startsWith('#EXT-X-STREAM-INF:')) {
+            output.push(line);
+            // Next line is the variant playlist URI — absolutify it
+            if (i + 1 < lines.length) {
+                i++;
+                output.push(`${cdnUrl}/${lines[i].trim()}`);
+            }
+            continue;
+        }
+
+        // Skip comment lines (like "## Generated with ...")
+        if (line.startsWith('#')) {
+            output.push(line);
+            continue;
+        }
+
+        // Blank lines
+        if (!line.trim()) {
+            output.push(line);
+            continue;
+        }
+
+        // Any other non-empty line — absolutify just in case
+        output.push(`${cdnUrl}/${line.trim()}`);
+    }
+
+    return output.join('\n');
+}
+
+/** Replace URI="relative.m3u8" with URI="https://cdn.../relative.m3u8" */
+function absolutifyUri(line, cdnUrl) {
+    return line.replace(/URI="([^"]+)"/, (_, uri) => `URI="${cdnUrl}/${uri}"`);
 }
 
 // ==================== STREMIO ADDON ====================
@@ -270,13 +391,67 @@ const PORT = process.env.PORT || 7515;
 
 const app = express();
 
-// CORS headers
+// CORS headers + detect server URL from incoming requests
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', '*');
     if (req.method === 'OPTIONS') return res.sendStatus(200);
+
+    // Auto-detect our public URL from incoming requests
+    const host = req.get('x-forwarded-host') || req.get('host');
+    const proto = req.get('x-forwarded-proto') || req.protocol;
+    if (host) serverUrl = `${proto}://${host}`;
+
     next();
+});
+
+// ----- HLS manifest proxy routes -----
+// Serves a stripped-down manifest (English audio/subs only) with absolute CDN URLs.
+// The player then fetches variant playlists and segments directly from the CDN.
+
+app.get('/hls/series/:seriesId/:episode/playlist.m3u8', async (req, res) => {
+    const series = SERIES.find(s => s.id === req.params.seriesId);
+    const ep = req.params.episode;
+    if (!series) return res.sendStatus(404);
+
+    try {
+        const filtered = await fetchFilteredManifest(`${series.cdn}/${ep}`);
+        if (!filtered) return res.sendStatus(502);
+        res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.send(filtered);
+    } catch (err) {
+        console.error(`[Proxy] Error for series ${series.cdn}/${ep}:`, err.message);
+        // Fallback: redirect to original CDN manifest
+        res.redirect(`${CDN_BASE}/${series.cdn}/${ep}/playlist.m3u8`);
+    }
+});
+
+app.get('/hls/movie/:movieId/playlist.m3u8', async (req, res) => {
+    const movie = MOVIES.find(m => m.id === req.params.movieId);
+    if (!movie) return res.sendStatus(404);
+
+    try {
+        const filtered = await fetchFilteredManifest(movie.cdnPath);
+        if (!filtered) return res.sendStatus(502);
+        res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.send(filtered);
+    } catch (err) {
+        console.error(`[Proxy] Error for movie ${movie.cdnPath}:`, err.message);
+        res.redirect(`${CDN_BASE}/${movie.cdnPath}/playlist.m3u8`);
+    }
+});
+
+// Cache stats endpoint (optional, for debugging)
+app.get('/cache/stats', (req, res) => {
+    res.json({
+        entries: manifestCache.size,
+        keys: [...manifestCache.keys()],
+    });
 });
 
 // Mount the Stremio addon routes
