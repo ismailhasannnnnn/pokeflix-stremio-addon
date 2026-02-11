@@ -1,0 +1,18 @@
+services:
+  pokeflix:
+    build: .
+    container_name: pokeflix-addon
+    ports:
+      - "7515:7515"
+    environment:
+      - PORT=7515
+      - NODE_ENV=production
+    restart: unless-stopped
+    # Chromium needs extra privileges in Docker
+    security_opt:
+      - seccomp=unconfined
+    # Limit resources
+    deploy:
+      resources:
+        limits:
+          memory: 1G
