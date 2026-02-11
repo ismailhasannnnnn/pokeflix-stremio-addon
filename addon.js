@@ -12,52 +12,52 @@ let serverUrl = `http://localhost:${process.env.PORT || 7515}`;
 
 // CDN slug, episode count, and metadata for each season
 const SERIES = [
-    // Generation I
-    { id: 'pokeflix-s01', num: 1, name: 'Pokémon: Indigo League', cdn: '01-indigo-league', episodes: 82, poster: `${BASE_URL}/static/season_logos/1.png`, gen: 'Generation I', desc: 'Follow Ash Ketchum, Misty and Brock on their adventure through the Kanto region. The classic series where it all began!' },
-    { id: 'pokeflix-s02', num: 2, name: 'Pokémon: Orange Island Adventures', cdn: '02-orange-islands', episodes: 36, poster: `${BASE_URL}/static/season_logos/2.png`, gen: 'Generation I', desc: 'Ash, Misty and Tracey explore the Orange Archipelago.' },
+    // Generation I — TVMaze show 590, seasons match our numbering
+    { id: 'pokeflix-s01', num: 1, name: 'Pokémon: Indigo League', cdn: '01-indigo-league', episodes: 82, poster: `${BASE_URL}/static/season_logos/1.png`, gen: 'Generation I', desc: 'Follow Ash Ketchum, Misty and Brock on their adventure through the Kanto region. The classic series where it all began!', tvmaze: { showId: 590, season: 1 } },
+    { id: 'pokeflix-s02', num: 2, name: 'Pokémon: Orange Island Adventures', cdn: '02-orange-islands', episodes: 36, poster: `${BASE_URL}/static/season_logos/2.png`, gen: 'Generation I', desc: 'Ash, Misty and Tracey explore the Orange Archipelago.', tvmaze: { showId: 590, season: 2 } },
     // Generation II
-    { id: 'pokeflix-s03', num: 3, name: 'Pokémon: The Johto Journeys', cdn: '03-johto-journeys', episodes: 41, poster: `${BASE_URL}/static/season_logos/3.png`, gen: 'Generation II', desc: 'Ash, Misty and Brock journey through Johto from New Bark Town to Goldenrod City.' },
-    { id: 'pokeflix-s04', num: 4, name: 'Pokémon: Johto League Champions', cdn: '04-johto-league', episodes: 52, poster: `${BASE_URL}/static/season_logos/4.png`, gen: 'Generation II', desc: 'Adventures through Johto from Goldenrod City to Cianwood City.' },
-    { id: 'pokeflix-s05', num: 5, name: 'Pokémon: Master Quest', cdn: '05-master-quest', episodes: 65, poster: `${BASE_URL}/static/season_logos/5.png`, gen: 'Generation II', desc: 'Adventures through Johto from Cianwood City to Mt. Silver.' },
+    { id: 'pokeflix-s03', num: 3, name: 'Pokémon: The Johto Journeys', cdn: '03-johto-journeys', episodes: 41, poster: `${BASE_URL}/static/season_logos/3.png`, gen: 'Generation II', desc: 'Ash, Misty and Brock journey through Johto from New Bark Town to Goldenrod City.', tvmaze: { showId: 590, season: 3 } },
+    { id: 'pokeflix-s04', num: 4, name: 'Pokémon: Johto League Champions', cdn: '04-johto-league', episodes: 52, poster: `${BASE_URL}/static/season_logos/4.png`, gen: 'Generation II', desc: 'Adventures through Johto from Goldenrod City to Cianwood City.', tvmaze: { showId: 590, season: 4 } },
+    { id: 'pokeflix-s05', num: 5, name: 'Pokémon: Master Quest', cdn: '05-master-quest', episodes: 65, poster: `${BASE_URL}/static/season_logos/5.png`, gen: 'Generation II', desc: 'Adventures through Johto from Cianwood City to Mt. Silver.', tvmaze: { showId: 590, season: 5 } },
     // Generation III
-    { id: 'pokeflix-s06', num: 6, name: 'Pokémon: Advanced', cdn: '06-advanced', episodes: 40, poster: `${BASE_URL}/static/season_logos/6.png`, gen: 'Generation III', desc: 'Ash, May, Max and Brock begin their adventure through Hoenn.' },
-    { id: 'pokeflix-s07', num: 7, name: 'Pokémon: Advanced Challenge', cdn: '07-advanced-challenge', episodes: 52, poster: `${BASE_URL}/static/season_logos/7.png`, gen: 'Generation III', desc: 'Continuing adventures through Hoenn from Mauville City to Lilycove City.' },
-    { id: 'pokeflix-s08', num: 8, name: 'Pokémon: Advanced Battle', cdn: '08-advanced-battle', episodes: 53, poster: `${BASE_URL}/static/season_logos/8.png`, gen: 'Generation III', desc: 'Adventures through Hoenn to Ever Grande City and back to Kanto.' },
-    { id: 'pokeflix-s09', num: 9, name: 'Pokémon: Battle Frontier', cdn: '09-battle-frontier', episodes: 47, poster: `${BASE_URL}/static/season_logos/9.png`, gen: 'Generation III', desc: "Adventures through Kanto's Battle Frontier." },
+    { id: 'pokeflix-s06', num: 6, name: 'Pokémon: Advanced', cdn: '06-advanced', episodes: 40, poster: `${BASE_URL}/static/season_logos/6.png`, gen: 'Generation III', desc: 'Ash, May, Max and Brock begin their adventure through Hoenn.', tvmaze: { showId: 590, season: 6 } },
+    { id: 'pokeflix-s07', num: 7, name: 'Pokémon: Advanced Challenge', cdn: '07-advanced-challenge', episodes: 52, poster: `${BASE_URL}/static/season_logos/7.png`, gen: 'Generation III', desc: 'Continuing adventures through Hoenn from Mauville City to Lilycove City.', tvmaze: { showId: 590, season: 7 } },
+    { id: 'pokeflix-s08', num: 8, name: 'Pokémon: Advanced Battle', cdn: '08-advanced-battle', episodes: 53, poster: `${BASE_URL}/static/season_logos/8.png`, gen: 'Generation III', desc: 'Adventures through Hoenn to Ever Grande City and back to Kanto.', tvmaze: { showId: 590, season: 8 } },
+    { id: 'pokeflix-s09', num: 9, name: 'Pokémon: Battle Frontier', cdn: '09-battle-frontier', episodes: 47, poster: `${BASE_URL}/static/season_logos/9.png`, gen: 'Generation III', desc: "Adventures through Kanto's Battle Frontier.", tvmaze: { showId: 590, season: 9 } },
     // Generation IV
-    { id: 'pokeflix-s10', num: 10, name: 'Pokémon: Diamond and Pearl', cdn: '10-diamond-pearl', episodes: 51, poster: `${BASE_URL}/static/season_logos/10.png`, gen: 'Generation IV', desc: 'Ash, Dawn and Brock begin their Sinnoh adventure.' },
-    { id: 'pokeflix-s11', num: 11, name: 'Pokémon: DP Battle Dimension', cdn: '11-dp-battle-dimension', episodes: 52, poster: `${BASE_URL}/static/season_logos/11.png`, gen: 'Generation IV', desc: 'Sinnoh adventures from Solaceon Town to Hearthome City.' },
-    { id: 'pokeflix-s12', num: 12, name: 'Pokémon: DP Galactic Battles', cdn: '12-dp-galactic-battles', episodes: 53, poster: `${BASE_URL}/static/season_logos/12.png`, gen: 'Generation IV', desc: 'Sinnoh adventures from Hearthome City to Sunyshore City.' },
-    { id: 'pokeflix-s13', num: 13, name: 'Pokémon: DP Sinnoh League Victors', cdn: '13-dp-sinnoh-league', episodes: 34, poster: `${BASE_URL}/static/season_logos/13.png`, gen: 'Generation IV', desc: 'The final stretch to the Sinnoh Pokémon League.' },
+    { id: 'pokeflix-s10', num: 10, name: 'Pokémon: Diamond and Pearl', cdn: '10-diamond-pearl', episodes: 51, poster: `${BASE_URL}/static/season_logos/10.png`, gen: 'Generation IV', desc: 'Ash, Dawn and Brock begin their Sinnoh adventure.', tvmaze: { showId: 590, season: 10 } },
+    { id: 'pokeflix-s11', num: 11, name: 'Pokémon: DP Battle Dimension', cdn: '11-dp-battle-dimension', episodes: 52, poster: `${BASE_URL}/static/season_logos/11.png`, gen: 'Generation IV', desc: 'Sinnoh adventures from Solaceon Town to Hearthome City.', tvmaze: { showId: 590, season: 11 } },
+    { id: 'pokeflix-s12', num: 12, name: 'Pokémon: DP Galactic Battles', cdn: '12-dp-galactic-battles', episodes: 53, poster: `${BASE_URL}/static/season_logos/12.png`, gen: 'Generation IV', desc: 'Sinnoh adventures from Hearthome City to Sunyshore City.', tvmaze: { showId: 590, season: 12 } },
+    { id: 'pokeflix-s13', num: 13, name: 'Pokémon: DP Sinnoh League Victors', cdn: '13-dp-sinnoh-league', episodes: 34, poster: `${BASE_URL}/static/season_logos/13.png`, gen: 'Generation IV', desc: 'The final stretch to the Sinnoh Pokémon League.', tvmaze: { showId: 590, season: 13 } },
     // Generation V
-    { id: 'pokeflix-s14', num: 14, name: 'Pokémon: Black & White', cdn: '14-black-white', episodes: 48, poster: `${BASE_URL}/static/season_logos/14.png`, gen: 'Generation V', desc: 'Ash, Iris and Cilan explore the Unova region.' },
-    { id: 'pokeflix-s15', num: 15, name: 'Pokémon: BW Rival Destinies', cdn: '15-bw-rival-destinies', episodes: 49, poster: `${BASE_URL}/static/season_logos/15.png`, gen: 'Generation V', desc: 'Continuing adventures through Unova.' },
-    { id: 'pokeflix-s16', num: 16, name: 'Pokémon: BW Adventures in Unova', cdn: '16-bw-adventures-in-unova', episodes: 45, poster: `${BASE_URL}/static/season_logos/16.png`, gen: 'Generation V', desc: 'The final season of the Best Wishes series.' },
+    { id: 'pokeflix-s14', num: 14, name: 'Pokémon: Black & White', cdn: '14-black-white', episodes: 48, poster: `${BASE_URL}/static/season_logos/14.png`, gen: 'Generation V', desc: 'Ash, Iris and Cilan explore the Unova region.', tvmaze: { showId: 590, season: 14 } },
+    { id: 'pokeflix-s15', num: 15, name: 'Pokémon: BW Rival Destinies', cdn: '15-bw-rival-destinies', episodes: 49, poster: `${BASE_URL}/static/season_logos/15.png`, gen: 'Generation V', desc: 'Continuing adventures through Unova.', tvmaze: { showId: 590, season: 15 } },
+    { id: 'pokeflix-s16', num: 16, name: 'Pokémon: BW Adventures in Unova', cdn: '16-bw-adventures-in-unova', episodes: 45, poster: `${BASE_URL}/static/season_logos/16.png`, gen: 'Generation V', desc: 'The final season of the Best Wishes series.', tvmaze: { showId: 590, season: 16 } },
     // Generation VI
-    { id: 'pokeflix-s17', num: 17, name: 'Pokémon: XY', cdn: '17-xy', episodes: 48, poster: `${BASE_URL}/static/season_logos/17.png`, gen: 'Generation VI', desc: 'Ash ventures into Kalos with Clemont, Bonnie and Serena.' },
-    { id: 'pokeflix-s18', num: 18, name: 'Pokémon: XY Kalos Quest', cdn: '18-xy-kalos-quest', episodes: 45, poster: `${BASE_URL}/static/season_logos/18.png`, gen: 'Generation VI', desc: 'More Kalos adventures and Mega Evolution mysteries.' },
-    { id: 'pokeflix-s19', num: 19, name: 'Pokémon: XYZ', cdn: '19-xyz', episodes: 48, poster: `${BASE_URL}/static/season_logos/19.png`, gen: 'Generation VI', desc: 'The epic finale of the XY series.' },
+    { id: 'pokeflix-s17', num: 17, name: 'Pokémon: XY', cdn: '17-xy', episodes: 48, poster: `${BASE_URL}/static/season_logos/17.png`, gen: 'Generation VI', desc: 'Ash ventures into Kalos with Clemont, Bonnie and Serena.', tvmaze: { showId: 590, season: 17 } },
+    { id: 'pokeflix-s18', num: 18, name: 'Pokémon: XY Kalos Quest', cdn: '18-xy-kalos-quest', episodes: 45, poster: `${BASE_URL}/static/season_logos/18.png`, gen: 'Generation VI', desc: 'More Kalos adventures and Mega Evolution mysteries.', tvmaze: { showId: 590, season: 18 } },
+    { id: 'pokeflix-s19', num: 19, name: 'Pokémon: XYZ', cdn: '19-xyz', episodes: 48, poster: `${BASE_URL}/static/season_logos/19.png`, gen: 'Generation VI', desc: 'The epic finale of the XY series.', tvmaze: { showId: 590, season: 19 } },
     // Generation VII
-    { id: 'pokeflix-s20', num: 20, name: 'Pokémon: Sun & Moon', cdn: '20-sun-moon', episodes: 43, poster: `${BASE_URL}/static/season_logos/20.png`, gen: 'Generation VII', desc: 'Ash attends a Pokémon school in the Alola region.' },
-    { id: 'pokeflix-s21', num: 21, name: 'Pokémon: Sun & Moon Ultra Adventures', cdn: '21-sun-moon-ultra-adventures', episodes: 49, poster: `${BASE_URL}/static/season_logos/21.png`, gen: 'Generation VII', desc: 'Ultra Beast encounters in Alola.' },
-    { id: 'pokeflix-s22', num: 22, name: 'Pokémon: Sun & Moon Ultra Legends', cdn: '22-sun-moon-ultra-legends', episodes: 54, poster: `${BASE_URL}/static/season_logos/22.png`, gen: 'Generation VII', desc: 'The final season of Sun & Moon.' },
+    { id: 'pokeflix-s20', num: 20, name: 'Pokémon: Sun & Moon', cdn: '20-sun-moon', episodes: 43, poster: `${BASE_URL}/static/season_logos/20.png`, gen: 'Generation VII', desc: 'Ash attends a Pokémon school in the Alola region.', tvmaze: { showId: 590, season: 20 } },
+    { id: 'pokeflix-s21', num: 21, name: 'Pokémon: Sun & Moon Ultra Adventures', cdn: '21-sun-moon-ultra-adventures', episodes: 49, poster: `${BASE_URL}/static/season_logos/21.png`, gen: 'Generation VII', desc: 'Ultra Beast encounters in Alola.', tvmaze: { showId: 590, season: 21 } },
+    { id: 'pokeflix-s22', num: 22, name: 'Pokémon: Sun & Moon Ultra Legends', cdn: '22-sun-moon-ultra-legends', episodes: 54, poster: `${BASE_URL}/static/season_logos/22.png`, gen: 'Generation VII', desc: 'The final season of Sun & Moon.', tvmaze: { showId: 590, season: 22 } },
     // Generation VIII
-    { id: 'pokeflix-s23', num: 23, name: 'Pokémon Journeys', cdn: '23-journeys', episodes: 48, poster: `${BASE_URL}/static/season_logos/23.png`, gen: 'Generation VIII', desc: 'Ash and Goh travel the world researching Pokémon.' },
-    { id: 'pokeflix-s24', num: 24, name: 'Pokémon Master Journeys', cdn: '24-master-journeys', episodes: 42, poster: `${BASE_URL}/static/season_logos/24.png`, gen: 'Generation VIII', desc: 'The Pokémon World Coronation Series intensifies!' },
-    { id: 'pokeflix-s25', num: 25, name: 'Pokémon Ultimate Journeys', cdn: '25-ultimate-journeys', episodes: 53, poster: `${BASE_URL}/static/season_logos/25.png`, gen: 'Generation VIII', desc: "The grand finale of Ash's journey." },
+    { id: 'pokeflix-s23', num: 23, name: 'Pokémon Journeys', cdn: '23-journeys', episodes: 48, poster: `${BASE_URL}/static/season_logos/23.png`, gen: 'Generation VIII', desc: 'Ash and Goh travel the world researching Pokémon.', tvmaze: { showId: 590, season: 23 } },
+    { id: 'pokeflix-s24', num: 24, name: 'Pokémon Master Journeys', cdn: '24-master-journeys', episodes: 42, poster: `${BASE_URL}/static/season_logos/24.png`, gen: 'Generation VIII', desc: 'The Pokémon World Coronation Series intensifies!', tvmaze: { showId: 590, season: 24 } },
+    { id: 'pokeflix-s25', num: 25, name: 'Pokémon Ultimate Journeys', cdn: '25-ultimate-journeys', episodes: 53, poster: `${BASE_URL}/static/season_logos/25.png`, gen: 'Generation VIII', desc: "The grand finale of Ash's journey.", tvmaze: { showId: 590, season: 25 } },
     // Generation IX
-    { id: 'pokeflix-s26', num: 26, name: 'Pokémon Horizons', cdn: '26-horizons', episodes: 45, poster: `${BASE_URL}/static/season_logos/26.png`, gen: 'Generation IX', desc: 'Liko, Roy and the Rising Volt Tacklers begin a new Pokémon adventure!' },
-    { id: 'pokeflix-s27', num: 27, name: 'Pokémon Horizons: The Search for Laqua', cdn: '27-horizons-search-for-laqua', episodes: 44, poster: `${BASE_URL}/static/season_logos/27.png`, gen: 'Generation IX', desc: 'The search for the Six Hero Pokémon and the legendary land of Laqua continues.' },
+    { id: 'pokeflix-s26', num: 26, name: 'Pokémon Horizons', cdn: '26-horizons', episodes: 45, poster: `${BASE_URL}/static/season_logos/26.png`, gen: 'Generation IX', desc: 'Liko, Roy and the Rising Volt Tacklers begin a new Pokémon adventure!', tvmaze: { showId: 590, season: 26 } },
+    { id: 'pokeflix-s27', num: 27, name: 'Pokémon Horizons: The Search for Laqua', cdn: '27-horizons-search-for-laqua', episodes: 44, poster: `${BASE_URL}/static/season_logos/27.png`, gen: 'Generation IX', desc: 'The search for the Six Hero Pokémon and the legendary land of Laqua continues.', tvmaze: { showId: 590, season: 27 } },
     { id: 'pokeflix-s28', num: 28, name: 'Pokémon Horizons: Rising Hope', cdn: '28-horizons-rising-hope', episodes: 12, poster: `${BASE_URL}/static/season_logos/28.png`, gen: 'Generation IX', desc: 'A mysterious pink mist threatens Pokémon as the Rising Volt Tacklers return!' },
-    // Specials - Mini-series
-    { id: 'pokeflix-sp-origins', num: 100, name: 'Pokémon Origins', cdn: '0-origins', episodes: 4, poster: `${BASE_URL}/static/thumbnails/0-origins/1.jpg`, gen: 'Specials', desc: 'Follow Trainer Red on his journey through Kanto in this retelling of the original games.' },
-    { id: 'pokeflix-sp-generations', num: 101, name: 'Pokémon Generations', cdn: '0-generations', episodes: 18, poster: `${BASE_URL}/static/thumbnails/0-generations/1.jpg`, gen: 'Specials', desc: 'Short episodes revisiting iconic moments from across all Pokémon generations.' },
-    { id: 'pokeflix-sp-twilight', num: 102, name: 'Pokémon: Twilight Wings', cdn: '0-twilight-wings', episodes: 8, poster: `${BASE_URL}/static/thumbnails/0-twilight-wings/1.jpg`, gen: 'Specials', desc: 'Short stories set in the Galar region.' },
-    { id: 'pokeflix-sp-evolutions', num: 103, name: 'Pokémon Evolutions', cdn: '0-evolutions', episodes: 8, poster: `${BASE_URL}/static/thumbnails/0-evolutions/1.jpg`, gen: 'Specials', desc: 'Revisiting moments from across Pokémon history.' },
+    // Specials - Mini-series (separate TVMaze shows)
+    { id: 'pokeflix-sp-origins', num: 100, name: 'Pokémon Origins', cdn: '0-origins', episodes: 4, poster: `${BASE_URL}/static/thumbnails/0-origins/1.jpg`, gen: 'Specials', desc: 'Follow Trainer Red on his journey through Kanto in this retelling of the original games.', tvmaze: { showId: 5728, season: 1 } },
+    { id: 'pokeflix-sp-generations', num: 101, name: 'Pokémon Generations', cdn: '0-generations', episodes: 18, poster: `${BASE_URL}/static/thumbnails/0-generations/1.jpg`, gen: 'Specials', desc: 'Short episodes revisiting iconic moments from across all Pokémon generations.', tvmaze: { showId: 21083, season: 1 } },
+    { id: 'pokeflix-sp-twilight', num: 102, name: 'Pokémon: Twilight Wings', cdn: '0-twilight-wings', episodes: 8, poster: `${BASE_URL}/static/thumbnails/0-twilight-wings/1.jpg`, gen: 'Specials', desc: 'Short stories set in the Galar region.', tvmaze: { showId: 45452, season: 1 } },
+    { id: 'pokeflix-sp-evolutions', num: 103, name: 'Pokémon Evolutions', cdn: '0-evolutions', episodes: 8, poster: `${BASE_URL}/static/thumbnails/0-evolutions/1.jpg`, gen: 'Specials', desc: 'Revisiting moments from across Pokémon history.', tvmaze: { showId: 57326, season: 1 } },
     { id: 'pokeflix-sp-hisuian', num: 104, name: 'Pokémon: Hisuian Snow', cdn: '0-hisuian-snow', episodes: 3, poster: `${BASE_URL}/static/thumbnails/0-hisuian-snow/1.jpg`, gen: 'Specials', desc: 'A story set in the ancient Hisui region.' },
     { id: 'pokeflix-sp-paldean', num: 105, name: 'Pokémon: Paldean Winds', cdn: '0-paldean-winds', episodes: 4, poster: `${BASE_URL}/static/thumbnails/0-paldean-winds/1.jpg`, gen: 'Specials', desc: 'Stories from students at a Paldean academy.' },
     { id: 'pokeflix-sp-mega', num: 106, name: 'Pokémon: Mega Evolution Specials', cdn: '0-mega-evolution', episodes: 4, poster: `${BASE_URL}/static/thumbnails/0-mega-evolution/1.jpg`, gen: 'Specials', desc: "Alain's journey to battle every Mega Evolution." },
-    { id: 'pokeflix-sp-chronicles', num: 107, name: 'Pokémon Chronicles', cdn: '0-chronicles', episodes: 22, poster: `${BASE_URL}/static/thumbnails/0-chronicles/1.jpg`, gen: 'Specials', desc: 'Side stories featuring various Pokémon characters.' },
+    { id: 'pokeflix-sp-chronicles', num: 107, name: 'Pokémon Chronicles', cdn: '0-chronicles', episodes: 22, poster: `${BASE_URL}/static/thumbnails/0-chronicles/1.jpg`, gen: 'Specials', desc: 'Side stories featuring various Pokémon characters.', tvmaze: { showId: 5726, season: 1 } },
     { id: 'pokeflix-sp-mystery', num: 108, name: 'Pokémon Mystery Dungeon', cdn: '0-mystery-dungeon', episodes: 5, poster: `${BASE_URL}/static/thumbnails/0-mystery-dungeon/1.jpg`, gen: 'Specials', desc: 'Mystery Dungeon special episodes.' },
     { id: 'pokeflix-sp-pikachu', num: 109, name: 'Pikachu Shorts', cdn: '0-pikachu-shorts', episodes: 21, poster: `${BASE_URL}/static/thumbnails/0-pikachu-shorts/1.jpg`, gen: 'Specials', desc: 'Fun short adventures starring Pikachu and friends.' },
     { id: 'pokeflix-sp-specials', num: 110, name: 'Pokémon Specials', cdn: '0-specials', episodes: 23, poster: `${BASE_URL}/static/thumbnails/0-specials/1.jpg`, gen: 'Specials', desc: 'Standalone Pokémon specials including Mewtwo Returns and more.' },
@@ -230,6 +230,72 @@ function absolutifyUri(line, cdnUrl) {
     return line.replace(/URI="([^"]+)"/, (_, uri) => `URI="${cdnUrl}/${uri}"`);
 }
 
+// ==================== EPISODE TITLES (TVMaze) ====================
+
+// Cache: seriesId → { 1: 'Title', 2: 'Title', ... }
+const episodeTitles = new Map();
+let titlesLoaded = false;
+
+/**
+ * Fetch episode titles from TVMaze for all series at startup.
+ * Uses bulk fetch: one request per unique TVMaze show ID.
+ * Falls back to "Episode N" if fetch fails.
+ */
+async function loadEpisodeTitles() {
+    // Collect unique TVMaze show IDs
+    const showIds = new Set();
+    for (const s of SERIES) {
+        if (s.tvmaze) showIds.add(s.tvmaze.showId);
+    }
+
+    console.log(`[TVMaze] Fetching episode titles for ${showIds.size} shows...`);
+
+    // Fetch all shows in parallel
+    const showEpisodes = new Map(); // showId → episodes array
+    const fetches = [...showIds].map(async (showId) => {
+        try {
+            const data = await httpsGet(`https://api.tvmaze.com/shows/${showId}/episodes`);
+            if (data) {
+                showEpisodes.set(showId, JSON.parse(data));
+            }
+        } catch (err) {
+            console.warn(`[TVMaze] Failed to fetch show ${showId}:`, err.message);
+        }
+    });
+    await Promise.all(fetches);
+
+    // Map episodes to our series by season number
+    for (const series of SERIES) {
+        if (!series.tvmaze) continue;
+        const episodes = showEpisodes.get(series.tvmaze.showId);
+        if (!episodes) continue;
+
+        const titles = {};
+        const seasonEps = episodes.filter(e => e.season === series.tvmaze.season);
+        for (const ep of seasonEps) {
+            if (ep.number && ep.name) {
+                titles[ep.number] = ep.name;
+            }
+        }
+        if (Object.keys(titles).length > 0) {
+            episodeTitles.set(series.id, titles);
+        }
+    }
+
+    const mapped = [...episodeTitles.values()].reduce((t, m) => t + Object.keys(m).length, 0);
+    console.log(`[TVMaze] Loaded ${mapped} episode titles for ${episodeTitles.size} series`);
+    titlesLoaded = true;
+}
+
+/** Get episode title, falling back to "Episode N" if not available. */
+function getEpisodeTitle(seriesId, episodeNum) {
+    const titles = episodeTitles.get(seriesId);
+    if (titles && titles[episodeNum]) {
+        return titles[episodeNum];
+    }
+    return `Episode ${episodeNum}`;
+}
+
 // ==================== STREMIO ADDON ====================
 
 const builder = new addonBuilder({
@@ -298,13 +364,14 @@ builder.defineMetaHandler(async (args) => {
     if (series) {
         const videos = [];
         for (let ep = 1; ep <= series.episodes; ep++) {
+            const title = getEpisodeTitle(series.id, ep);
             videos.push({
                 id: `${series.id}:1:${ep}`,
-                title: `Episode ${ep}`,
+                title: title,
                 season: 1,
                 episode: ep,
                 released: new Date('2025-01-01').toISOString(),
-                overview: `${series.name} — Episode ${ep}`,
+                overview: `${series.name} — ${title}`,
             });
         }
 
@@ -457,7 +524,12 @@ app.get('/cache/stats', (req, res) => {
 // Mount the Stremio addon routes
 app.use(getRouter(builder.getInterface()));
 
-app.listen(PORT, () => {
-    const totalEps = SERIES.reduce((t, s) => t + s.episodes, 0);
-    console.log(`\n🎮 Pokéflix Stremio Addon v2.0\n📡 Server:   http://localhost:${PORT}\n📺 Manifest: http://localhost:${PORT}/manifest.json\n🔗 Install:  stremio://localhost:${PORT}/manifest.json\n📊 ${SERIES.length} series (${totalEps} episodes) + ${MOVIES.length} movies\n`);
-});
+// Load episode titles then start server
+loadEpisodeTitles()
+    .catch(err => console.warn('[TVMaze] Failed to load titles, using fallbacks:', err.message))
+    .finally(() => {
+        app.listen(PORT, () => {
+            const totalEps = SERIES.reduce((t, s) => t + s.episodes, 0);
+            console.log(`\n🎮 Pokéflix Stremio Addon v2.0\n📡 Server:   http://localhost:${PORT}\n📺 Manifest: http://localhost:${PORT}/manifest.json\n🔗 Install:  stremio://localhost:${PORT}/manifest.json\n📊 ${SERIES.length} series (${totalEps} episodes) + ${MOVIES.length} movies\n📝 Episode titles: ${titlesLoaded ? episodeTitles.size + ' series mapped' : 'fallback mode'}\n`);
+        });
+    });
