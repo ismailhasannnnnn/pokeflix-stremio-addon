@@ -318,7 +318,7 @@ builder.defineMetaHandler(async (args) => {
                 season: 1,
                 episode: ep,
                 released: new Date('2025-01-01').toISOString(),
-                thumbnail: `${BASE_URL}/static/thumbnails/${series.cdn}/${ep + 1}.jpg`,
+                thumbnail: `${BASE_URL}/static/thumbnails/${series.cdn}/${ep}.jpg`,
                 overview: `${series.name} — ${title}`,
             });
         }
