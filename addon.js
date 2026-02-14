@@ -469,6 +469,9 @@ app.get('/cache/stats', (req, res) => {
     });
 });
 
+// Serve static files (installation page)
+app.use(express.static('public'));
+
 // Mount the Stremio addon routes
 app.use(getRouter(builder.getInterface()));
 
@@ -476,5 +479,5 @@ app.use(getRouter(builder.getInterface()));
 app.listen(PORT, () => {
     const totalEps = SERIES.reduce((t, s) => t + s.episodes, 0);
     const titleCount = Object.values(episodeTitles).reduce((t, m) => t + Object.keys(m).length, 0);
-    console.log(`\n🎮 Pokéflix Stremio Addon v2.1\n📡 Server:   http://localhost:${PORT}\n📺 Manifest: http://localhost:${PORT}/manifest.json\n🔗 Install:  stremio://localhost:${PORT}/manifest.json\n📊 ${SERIES.length} series (${totalEps} episodes) + ${MOVIES.length} movies\n📝 ${titleCount} episode titles loaded from episodes.json\n`);
+    console.log(`\n🎮 Pokéflix Stremio Addon v2.1\n📡 Server:   http://localhost:${PORT}\n🌐 Install:  http://localhost:${PORT}\n📺 Manifest: http://localhost:${PORT}/manifest.json\n🔗 Direct:   stremio://localhost:${PORT}/manifest.json\n📊 ${SERIES.length} series (${totalEps} episodes) + ${MOVIES.length} movies\n📝 ${titleCount} episode titles loaded from episodes.json\n`);
 });
